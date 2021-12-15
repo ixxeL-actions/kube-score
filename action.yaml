@@ -22,9 +22,10 @@ inputs:
     description: 'Force exit 0 code'
     required: false
     default: 'true'
-  file:
+  working-dir:
     description: 'file to scan'
-    required: true
+    required: false
+    default: './*.yaml'
 
 runs:
   using: "composite"
@@ -36,7 +37,7 @@ runs:
         echo -e "${CYAN}[ INFO ] > Kube-score version.${BLANK}"
         kube-score version
 
-        echo -e "${YELLOW}[ EXECUTING ] > Executing Kube-score IaC test on ${{ inputs.file }}.${BLANK}"
+        echo -e "${YELLOW}[ EXECUTING ] > Executing Kube-score IaC test on ${{ inputs.working-dir }}.${BLANK}"
         if [[ "${{ inputs.verbose }}" = "true" ]]
         then
           VERBOSE="--verbose"
@@ -58,14 +59,14 @@ runs:
                            --kubernetes-version=${{ inputs.kube-version }} \
                            ${VERBOSE} \
                            ${WARN} \
-                           ${{ inputs.file }} | jq -C
+                           ${{ inputs.working-dir }} | jq -C
         else
           echo -e "${CYAN}[ INFO ] > Using HUMAN/CI format.${BLANK}"
           kube-score score --output-format=${{ inputs.format }} \
                            --kubernetes-version=${{ inputs.kube-version }} \
                            ${VERBOSE} \
                            ${WARN} \
-                           ${{ inputs.file }}
+                           ${{ inputs.working-dir }}
         fi
 
         EXIT_CODE="${PIPESTATUS[0]}"

@@ -22,4 +22,4 @@ jobs:
         kube-version: 'v1.18'
         warning-fail: 'false'  
         exit-zero: 'true'
-        file: 'deploy-test.yaml'
+        working-dir: './*.yaml'
